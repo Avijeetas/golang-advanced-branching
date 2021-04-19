@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -94,18 +95,18 @@ func readJSONFile() Values {
 func generateRating() {
 
 	f := readJSONFile()
-
+	fmt.Println(f)
 	for _, v := range f.Models {
 		var vehResult feedbackResult
 		var vehRating rating
 		for _, msg := range v.Feedback {
-			text := strings.Split(msg, " ")
-			if len(text) >= 5 {
+
+			if text := strings.Split(msg, " "); len(text) >= 5 {
 				vehRating = 5.0
 				vehResult.feedbackTotal++
 				for _, word := range text {
-					s := strings.Trim(strings.ToLower(word), " ,.,!,?,\t,\n,\r")
-					switch s {
+					//
+					switch s := strings.Trim(strings.ToLower(word), " ,.,!,?,\t,\n,\r"); s {
 					case "pleasure", "impressed", "wonderful", "fantastic", "splendid":
 						vehRating += extraPositive
 					case "help", "helpful", "thanks", "thank you", "happy":
@@ -114,10 +115,8 @@ func generateRating() {
 						vehRating += negative
 					case "pathetic", "bad", "worse", "unfortunately", "agitated", "frustrated":
 						vehRating += extraNegative
-
 					}
 				}
-
 				switch {
 				case vehRating > 8.0:
 					vehResult.feedbackPositive++
@@ -127,11 +126,9 @@ func generateRating() {
 					vehResult.feedbackNegative++
 				}
 			}
+		}
 
-		}
-		for _, v := range f.Models {
-			vehicleResult[v.Name] = vehResult
-		}
+		vehicleResult[v.Name] = vehResult
 
 	}
 
