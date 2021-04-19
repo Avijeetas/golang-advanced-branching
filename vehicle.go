@@ -16,6 +16,7 @@ type bike struct {
 
 // Values array for the feedback.json file
 type Values struct {
+	Models []Model `json:"values"`
 }
 
 // Model array for the feedback.json file
